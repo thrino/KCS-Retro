@@ -116,6 +116,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(224, 224, 224);
             ClientSize = new Size(456, 198);
             Controls.Add(cancelDoneBtn);
             Controls.Add(tapeRunningForLabel);

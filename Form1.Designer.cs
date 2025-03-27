@@ -181,7 +181,7 @@
             toolStripButton8.ImageTransparentColor = Color.Magenta;
             toolStripButton8.Name = "toolStripButton8";
             toolStripButton8.Size = new Size(32, 32);
-            toolStripButton8.Text = "toolStripButton8";
+            toolStripButton8.Text = "Add files to record";
             toolStripButton8.Click += button5_Click_1;
             // 
             // toolStripButton7
@@ -191,11 +191,12 @@
             toolStripButton7.ImageTransparentColor = Color.Magenta;
             toolStripButton7.Name = "toolStripButton7";
             toolStripButton7.Size = new Size(32, 32);
-            toolStripButton7.Text = "toolStripButton7";
+            toolStripButton7.Text = "Remove selected files from list";
             toolStripButton7.Click += button6_Click;
             // 
             // toolStripSeparator3
             // 
+            toolStripSeparator3.Margin = new Padding(5, 0, 5, 0);
             toolStripSeparator3.Name = "toolStripSeparator3";
             toolStripSeparator3.Size = new Size(6, 35);
             // 
@@ -206,7 +207,7 @@
             toolStripButton2.ImageTransparentColor = Color.Magenta;
             toolStripButton2.Name = "toolStripButton2";
             toolStripButton2.Size = new Size(32, 32);
-            toolStripButton2.Text = "toolStripButton2";
+            toolStripButton2.Text = "Load from an input source";
             toolStripButton2.Click += toolStripButton2_Click;
             // 
             // toolStripButton3
@@ -216,10 +217,11 @@
             toolStripButton3.ImageTransparentColor = Color.Magenta;
             toolStripButton3.Name = "toolStripButton3";
             toolStripButton3.Size = new Size(32, 32);
-            toolStripButton3.Text = "toolStripButton3";
+            toolStripButton3.Text = "Record to an output device";
             // 
             // toolStripSeparator1
             // 
+            toolStripSeparator1.Margin = new Padding(5, 0, 5, 0);
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 35);
             // 
@@ -230,7 +232,7 @@
             toolStripButton1.ImageTransparentColor = Color.Magenta;
             toolStripButton1.Name = "toolStripButton1";
             toolStripButton1.Size = new Size(32, 32);
-            toolStripButton1.Text = "toolStripButton1";
+            toolStripButton1.Text = "Load from audio file";
             toolStripButton1.Click += fromWAVFileToolStripMenuItem_Click;
             // 
             // toolStripButton4
@@ -240,11 +242,12 @@
             toolStripButton4.ImageTransparentColor = Color.Magenta;
             toolStripButton4.Name = "toolStripButton4";
             toolStripButton4.Size = new Size(32, 32);
-            toolStripButton4.Text = "toolStripButton4";
+            toolStripButton4.Text = "Record to audio file";
             toolStripButton4.Click += recordToFileBtn_Click;
             // 
             // toolStripSeparator2
             // 
+            toolStripSeparator2.Margin = new Padding(5, 0, 5, 0);
             toolStripSeparator2.Name = "toolStripSeparator2";
             toolStripSeparator2.Size = new Size(6, 35);
             // 
@@ -255,7 +258,7 @@
             toolStripButton5.ImageTransparentColor = Color.Magenta;
             toolStripButton5.Name = "toolStripButton5";
             toolStripButton5.Size = new Size(32, 32);
-            toolStripButton5.Text = "toolStripButton5";
+            toolStripButton5.Text = "Settings";
             toolStripButton5.Click += settingsToolStripMenuItem_Click;
             // 
             // toolStripButton6
@@ -265,7 +268,7 @@
             toolStripButton6.ImageTransparentColor = Color.Magenta;
             toolStripButton6.Name = "toolStripButton6";
             toolStripButton6.Size = new Size(32, 32);
-            toolStripButton6.Text = "toolStripButton6";
+            toolStripButton6.Text = "Quit";
             toolStripButton6.Click += toolStripButton6_Click;
             // 
             // mainFrm
