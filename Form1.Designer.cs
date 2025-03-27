@@ -1,6 +1,6 @@
 ﻿namespace KCS_Retro
 {
-    partial class Form1
+    partial class mainFrm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,221 +28,268 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFrm));
             openFileDialog1 = new OpenFileDialog();
             saveFileDialog1 = new SaveFileDialog();
-            menuStrip1 = new MenuStrip();
-            fileToolStripMenuItem = new ToolStripMenuItem();
-            loadDataToolStripMenuItem = new ToolStripMenuItem();
-            fromAudioDeviceToolStripMenuItem = new ToolStripMenuItem();
-            fromWAVFileToolStripMenuItem = new ToolStripMenuItem();
-            addFileToolStripMenuItem = new ToolStripMenuItem();
-            toolStripMenuItem1 = new ToolStripSeparator();
-            quitKCSToolStripMenuItem = new ToolStripMenuItem();
-            settingsToolStripMenuItem = new ToolStripMenuItem();
-            helpToolStripMenuItem = new ToolStripMenuItem();
-            aboutKCSRetroToolStripMenuItem = new ToolStripMenuItem();
-            debugButtonToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             progressBar = new ToolStripProgressBar();
             fileList = new ListView();
-            checkBox1 = new CheckBox();
-            button6 = new Button();
-            button5 = new Button();
-            button4 = new Button();
-            button3 = new Button();
-            menuStrip1.SuspendLayout();
+            recordFilenames = new CheckBox();
+            removeFileBtn = new Button();
+            addFileBtn = new Button();
+            recordToFileBtn = new Button();
+            recordToOutputBtn = new Button();
+            recordInOneFile = new CheckBox();
+            toolStrip1 = new ToolStrip();
+            toolStripButton8 = new ToolStripButton();
+            toolStripButton7 = new ToolStripButton();
+            toolStripSeparator3 = new ToolStripSeparator();
+            toolStripButton2 = new ToolStripButton();
+            toolStripButton3 = new ToolStripButton();
+            toolStripSeparator1 = new ToolStripSeparator();
+            toolStripButton1 = new ToolStripButton();
+            toolStripButton4 = new ToolStripButton();
+            toolStripSeparator2 = new ToolStripSeparator();
+            toolStripButton5 = new ToolStripButton();
+            toolStripButton6 = new ToolStripButton();
             statusStrip1.SuspendLayout();
+            toolStrip1.SuspendLayout();
             SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, settingsToolStripMenuItem, helpToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(811, 24);
-            menuStrip1.TabIndex = 10;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // fileToolStripMenuItem
-            // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem, addFileToolStripMenuItem, toolStripMenuItem1, quitKCSToolStripMenuItem });
-            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(37, 20);
-            fileToolStripMenuItem.Text = "&File";
-            // 
-            // loadDataToolStripMenuItem
-            // 
-            loadDataToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { fromAudioDeviceToolStripMenuItem, fromWAVFileToolStripMenuItem });
-            loadDataToolStripMenuItem.Name = "loadDataToolStripMenuItem";
-            loadDataToolStripMenuItem.Size = new Size(127, 22);
-            loadDataToolStripMenuItem.Text = "&Load Data";
-            // 
-            // fromAudioDeviceToolStripMenuItem
-            // 
-            fromAudioDeviceToolStripMenuItem.Name = "fromAudioDeviceToolStripMenuItem";
-            fromAudioDeviceToolStripMenuItem.Size = new Size(175, 22);
-            fromAudioDeviceToolStripMenuItem.Text = "&From Audio Device";
-            // 
-            // fromWAVFileToolStripMenuItem
-            // 
-            fromWAVFileToolStripMenuItem.Name = "fromWAVFileToolStripMenuItem";
-            fromWAVFileToolStripMenuItem.Size = new Size(175, 22);
-            fromWAVFileToolStripMenuItem.Text = "F&rom WAV File";
-            fromWAVFileToolStripMenuItem.Click += fromWAVFileToolStripMenuItem_Click;
-            // 
-            // addFileToolStripMenuItem
-            // 
-            addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            addFileToolStripMenuItem.Size = new Size(127, 22);
-            addFileToolStripMenuItem.Text = "&Add File";
-            // 
-            // toolStripMenuItem1
-            // 
-            toolStripMenuItem1.Name = "toolStripMenuItem1";
-            toolStripMenuItem1.Size = new Size(124, 6);
-            // 
-            // quitKCSToolStripMenuItem
-            // 
-            quitKCSToolStripMenuItem.Name = "quitKCSToolStripMenuItem";
-            quitKCSToolStripMenuItem.Size = new Size(127, 22);
-            quitKCSToolStripMenuItem.Text = "&Quit KCS";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(61, 20);
-            settingsToolStripMenuItem.Text = "&Settings";
-            settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
-            // 
-            // helpToolStripMenuItem
-            // 
-            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutKCSRetroToolStripMenuItem, debugButtonToolStripMenuItem });
-            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Size = new Size(44, 20);
-            helpToolStripMenuItem.Text = "&Help";
-            // 
-            // aboutKCSRetroToolStripMenuItem
-            // 
-            aboutKCSRetroToolStripMenuItem.Name = "aboutKCSRetroToolStripMenuItem";
-            aboutKCSRetroToolStripMenuItem.Size = new Size(180, 22);
-            aboutKCSRetroToolStripMenuItem.Text = "&About KCS-Retro";
-            aboutKCSRetroToolStripMenuItem.Click += aboutKCSRetroToolStripMenuItem_Click;
-            // 
-            // debugButtonToolStripMenuItem
-            // 
-            debugButtonToolStripMenuItem.Name = "debugButtonToolStripMenuItem";
-            debugButtonToolStripMenuItem.Size = new Size(180, 22);
-            debugButtonToolStripMenuItem.Text = "&Debug Button";
-            debugButtonToolStripMenuItem.Click += debugButtonToolStripMenuItem_Click;
             // 
             // statusStrip1
             // 
+            statusStrip1.ImageScalingSize = new Size(32, 32);
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, progressBar });
-            statusStrip1.Location = new Point(0, 451);
+            statusStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            statusStrip1.Location = new Point(0, 486);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(811, 22);
+            statusStrip1.Size = new Size(814, 26);
+            statusStrip1.SizingGrip = false;
             statusStrip1.TabIndex = 11;
             statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(154, 17);
+            toolStripStatusLabel1.Size = new Size(154, 21);
             toolStripStatusLabel1.Text = "KCS-Retro v1.0 for Windows";
             // 
             // progressBar
             // 
             progressBar.Alignment = ToolStripItemAlignment.Right;
+            progressBar.AutoToolTip = true;
+            progressBar.Margin = new Padding(1, 3, 0, 3);
             progressBar.Name = "progressBar";
-            progressBar.RightToLeft = RightToLeft.Yes;
-            progressBar.Size = new Size(100, 16);
+            progressBar.Overflow = ToolStripItemOverflow.Never;
+            progressBar.RightToLeftLayout = true;
+            progressBar.Size = new Size(300, 20);
             // 
             // fileList
             // 
             fileList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            fileList.Location = new Point(0, 27);
+            fileList.BorderStyle = BorderStyle.FixedSingle;
+            fileList.Location = new Point(12, 49);
             fileList.Name = "fileList";
-            fileList.Size = new Size(811, 352);
+            fileList.Size = new Size(792, 389);
             fileList.TabIndex = 20;
             fileList.UseCompatibleStateImageBehavior = false;
             // 
-            // checkBox1
+            // recordFilenames
             // 
-            checkBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(234, 398);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(185, 19);
-            checkBox1.TabIndex = 19;
-            checkBox1.Text = "Record filenames at first block";
-            checkBox1.UseVisualStyleBackColor = true;
+            recordFilenames.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            recordFilenames.AutoSize = true;
+            recordFilenames.Location = new Point(236, 445);
+            recordFilenames.Name = "recordFilenames";
+            recordFilenames.Size = new Size(186, 19);
+            recordFilenames.TabIndex = 19;
+            recordFilenames.Text = "Record filenames to first block";
+            recordFilenames.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // removeFileBtn
             // 
-            button6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button6.Location = new Point(109, 388);
-            button6.Name = "button6";
-            button6.Size = new Size(91, 37);
-            button6.TabIndex = 18;
-            button6.Text = "&Remove File";
-            button6.UseVisualStyleBackColor = true;
-            button6.Click += button6_Click;
+            removeFileBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            removeFileBtn.Location = new Point(109, 446);
+            removeFileBtn.Name = "removeFileBtn";
+            removeFileBtn.Size = new Size(91, 37);
+            removeFileBtn.TabIndex = 18;
+            removeFileBtn.Text = "&Remove File";
+            removeFileBtn.UseVisualStyleBackColor = true;
+            removeFileBtn.Click += button6_Click;
             // 
-            // button5
+            // addFileBtn
             // 
-            button5.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button5.Location = new Point(12, 388);
-            button5.Name = "button5";
-            button5.Size = new Size(91, 37);
-            button5.TabIndex = 17;
-            button5.Text = "&Add File";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click_1;
+            addFileBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            addFileBtn.Location = new Point(12, 446);
+            addFileBtn.Name = "addFileBtn";
+            addFileBtn.Size = new Size(91, 37);
+            addFileBtn.TabIndex = 17;
+            addFileBtn.Text = "&Add File";
+            addFileBtn.UseVisualStyleBackColor = true;
+            addFileBtn.Click += button5_Click_1;
             // 
-            // button4
+            // recordToFileBtn
             // 
-            button4.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button4.Location = new Point(616, 387);
-            button4.Name = "button4";
-            button4.Size = new Size(185, 38);
-            button4.TabIndex = 16;
-            button4.Text = "Record to wav file";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click_2;
+            recordToFileBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            recordToFileBtn.Location = new Point(619, 445);
+            recordToFileBtn.Name = "recordToFileBtn";
+            recordToFileBtn.Size = new Size(185, 38);
+            recordToFileBtn.TabIndex = 16;
+            recordToFileBtn.Text = "Record to wav file";
+            recordToFileBtn.UseVisualStyleBackColor = true;
+            recordToFileBtn.Click += recordToFileBtn_Click;
             // 
-            // button3
+            // recordToOutputBtn
             // 
-            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button3.Location = new Point(425, 387);
-            button3.Name = "button3";
-            button3.Size = new Size(185, 38);
-            button3.TabIndex = 15;
-            button3.Text = "Record to output";
-            button3.UseVisualStyleBackColor = true;
+            recordToOutputBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            recordToOutputBtn.Location = new Point(428, 445);
+            recordToOutputBtn.Name = "recordToOutputBtn";
+            recordToOutputBtn.Size = new Size(185, 38);
+            recordToOutputBtn.TabIndex = 15;
+            recordToOutputBtn.Text = "Record to output";
+            recordToOutputBtn.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // recordInOneFile
+            // 
+            recordInOneFile.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            recordInOneFile.AutoSize = true;
+            recordInOneFile.Checked = true;
+            recordInOneFile.CheckState = CheckState.Checked;
+            recordInOneFile.Location = new Point(237, 464);
+            recordInOneFile.Name = "recordInOneFile";
+            recordInOneFile.Size = new Size(144, 19);
+            recordInOneFile.TabIndex = 21;
+            recordInOneFile.Text = "Record all files to 1 file";
+            recordInOneFile.UseVisualStyleBackColor = true;
+            // 
+            // toolStrip1
+            // 
+            toolStrip1.ImageScalingSize = new Size(28, 28);
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton8, toolStripButton7, toolStripSeparator3, toolStripButton2, toolStripButton3, toolStripSeparator1, toolStripButton1, toolStripButton4, toolStripSeparator2, toolStripButton5, toolStripButton6 });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Padding = new Padding(0, 0, 2, 0);
+            toolStrip1.Size = new Size(814, 35);
+            toolStrip1.Stretch = true;
+            toolStrip1.TabIndex = 22;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButton8
+            // 
+            toolStripButton8.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton8.Image = (Image)resources.GetObject("toolStripButton8.Image");
+            toolStripButton8.ImageTransparentColor = Color.Magenta;
+            toolStripButton8.Name = "toolStripButton8";
+            toolStripButton8.Size = new Size(32, 32);
+            toolStripButton8.Text = "toolStripButton8";
+            toolStripButton8.Click += button5_Click_1;
+            // 
+            // toolStripButton7
+            // 
+            toolStripButton7.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton7.Image = (Image)resources.GetObject("toolStripButton7.Image");
+            toolStripButton7.ImageTransparentColor = Color.Magenta;
+            toolStripButton7.Name = "toolStripButton7";
+            toolStripButton7.Size = new Size(32, 32);
+            toolStripButton7.Text = "toolStripButton7";
+            toolStripButton7.Click += button6_Click;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(6, 35);
+            // 
+            // toolStripButton2
+            // 
+            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
+            toolStripButton2.ImageTransparentColor = Color.Magenta;
+            toolStripButton2.Name = "toolStripButton2";
+            toolStripButton2.Size = new Size(32, 32);
+            toolStripButton2.Text = "toolStripButton2";
+            toolStripButton2.Click += toolStripButton2_Click;
+            // 
+            // toolStripButton3
+            // 
+            toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
+            toolStripButton3.ImageTransparentColor = Color.Magenta;
+            toolStripButton3.Name = "toolStripButton3";
+            toolStripButton3.Size = new Size(32, 32);
+            toolStripButton3.Text = "toolStripButton3";
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 35);
+            // 
+            // toolStripButton1
+            // 
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(32, 32);
+            toolStripButton1.Text = "toolStripButton1";
+            toolStripButton1.Click += fromWAVFileToolStripMenuItem_Click;
+            // 
+            // toolStripButton4
+            // 
+            toolStripButton4.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton4.Image = (Image)resources.GetObject("toolStripButton4.Image");
+            toolStripButton4.ImageTransparentColor = Color.Magenta;
+            toolStripButton4.Name = "toolStripButton4";
+            toolStripButton4.Size = new Size(32, 32);
+            toolStripButton4.Text = "toolStripButton4";
+            toolStripButton4.Click += recordToFileBtn_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(6, 35);
+            // 
+            // toolStripButton5
+            // 
+            toolStripButton5.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton5.Image = (Image)resources.GetObject("toolStripButton5.Image");
+            toolStripButton5.ImageTransparentColor = Color.Magenta;
+            toolStripButton5.Name = "toolStripButton5";
+            toolStripButton5.Size = new Size(32, 32);
+            toolStripButton5.Text = "toolStripButton5";
+            toolStripButton5.Click += settingsToolStripMenuItem_Click;
+            // 
+            // toolStripButton6
+            // 
+            toolStripButton6.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton6.Image = (Image)resources.GetObject("toolStripButton6.Image");
+            toolStripButton6.ImageTransparentColor = Color.Magenta;
+            toolStripButton6.Name = "toolStripButton6";
+            toolStripButton6.Size = new Size(32, 32);
+            toolStripButton6.Text = "toolStripButton6";
+            toolStripButton6.Click += toolStripButton6_Click;
+            // 
+            // mainFrm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLight;
-            ClientSize = new Size(811, 473);
+            ClientSize = new Size(814, 512);
+            Controls.Add(toolStrip1);
+            Controls.Add(recordInOneFile);
             Controls.Add(fileList);
-            Controls.Add(checkBox1);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
+            Controls.Add(recordFilenames);
+            Controls.Add(removeFileBtn);
+            Controls.Add(addFileBtn);
+            Controls.Add(recordToFileBtn);
+            Controls.Add(recordToOutputBtn);
             Controls.Add(statusStrip1);
-            Controls.Add(menuStrip1);
-            MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "mainFrm";
             Text = "KCS-Retro";
             Load += Form1_Load;
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -250,26 +297,27 @@
         #endregion
         private OpenFileDialog openFileDialog1;
         private SaveFileDialog saveFileDialog1;
-        private MenuStrip menuStrip1;
-        private ToolStripMenuItem fileToolStripMenuItem;
-        private ToolStripMenuItem settingsToolStripMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private ToolStripProgressBar progressBar;
-        private ToolStripMenuItem addFileToolStripMenuItem;
-        private ToolStripSeparator toolStripMenuItem1;
-        private ToolStripMenuItem quitKCSToolStripMenuItem;
-        private ToolStripMenuItem helpToolStripMenuItem;
-        private ToolStripMenuItem loadDataToolStripMenuItem;
-        private ToolStripMenuItem fromAudioDeviceToolStripMenuItem;
-        private ToolStripMenuItem fromWAVFileToolStripMenuItem;
         private ListView fileList;
-        private CheckBox checkBox1;
-        private Button button6;
-        private Button button5;
-        private Button button4;
-        private Button button3;
-        private ToolStripMenuItem aboutKCSRetroToolStripMenuItem;
-        private ToolStripMenuItem debugButtonToolStripMenuItem;
+        private CheckBox recordFilenames;
+        private Button removeFileBtn;
+        private Button addFileBtn;
+        private Button recordToFileBtn;
+        private Button recordToOutputBtn;
+        private CheckBox recordInOneFile;
+        private ToolStrip toolStrip1;
+        private ToolStripButton toolStripButton2;
+        private ToolStripButton toolStripButton3;
+        private ToolStripButton toolStripButton1;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripButton toolStripButton4;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton toolStripButton5;
+        private ToolStripButton toolStripButton6;
+        private ToolStripProgressBar progressBar;
+        private ToolStripButton toolStripButton7;
+        private ToolStripButton toolStripButton8;
+        private ToolStripSeparator toolStripSeparator3;
     }
 }

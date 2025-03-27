@@ -1,16 +1,20 @@
-
+ï»¿
+using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 using NAudio.Wave;
 
 namespace KCS_Retro
 {
-    public partial class Form1 : Form
+    public partial class mainFrm : Form
     {
         private readonly KansasCityStandard _kcs;
         private KansasCityStandardParameters _kcsParams = new KansasCityStandardParameters();
         public List<(string, string)> FilestoRecord = new List<(string, string)>();
-        public Form1()
+        public mainFrm()
         {
+            string settingsFile = "config.json";
+            _kcsParams = FileConfig.LoadKcsSettings(settingsFile);
             _kcs = new KansasCityStandard(_kcsParams);
 
             InitializeComponent();
@@ -48,11 +52,9 @@ namespace KCS_Retro
 
             fileList.Columns.Add("Recording time", 100);
             fileList.Columns.Add("WAV size", 100);
-            string settingsFile = "config.json";
-            _kcsParams = FileConfig.LoadKcsSettings(settingsFile);
 
-            // ...bruk kcsParams som normalt
 
+            progressBar.Anchor = AnchorStyles.Left;
 
         }
 
@@ -96,56 +98,51 @@ namespace KCS_Retro
         private void fromWAVFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "WAV filer (*.wav)|*.wav";
-
+            ofd.Filter = "WAV file (*.wav)|*.wav|MP3 file (*.mp3)|*.mp3|OGG file (*.ogg)|*.ogg|Alle filer (*.*)|*.*";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                var reader = new AudioFileReader(ofd.FileName);
-                List<short> samples = new();
-                var buffer = new float[reader.WaveFormat.SampleRate];
-                int read;
-                long totalBytes = reader.Length;
-                long bytesRead = 0;
 
-                // Sett opp ProgressBar
-                progressBar.ProgressBar.Invoke(() => { progressBar.Value = 0; progressBar.Maximum = 100; });
+                var response = _kcs.DecodeWavWithOptionalKcsFiles(ofd.FileName, progress =>
+progressBar.ProgressBar.Invoke(() => progressBar.Value = (int)(progress * 100))
+);
 
-                // Les samples med progress
-                while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
+
+                if (!response.IsSuccess)
                 {
-                    samples.AddRange(buffer.Take(read).Select(f => (short)(f * short.MaxValue)));
-                    bytesRead += read;
-
-                    // Oppdater progress
-                    double progress = (double)bytesRead / totalBytes;
-                    progressBar.ProgressBar.Invoke(() => progressBar.Value = (int)(progress * 100));
+                    MessageBox.Show(response.Message, "Feil under dekoding");
+                }
+                else
+                {
+                    AudioDataFile result = response.Data;
+                    List<byte[]> blocks = result.DataBlocks;
+                    List<string> filenames = result.Filenames;
+                    if (result.Filenames != null && result.Filenames.Count > 0)
+                    {
+                        // KCS_FILES ble funnet, vi har filnavn
+                        for (int i = 0; i < blocks.Count; i++)
+                        {
+                            string fileName = (i < result.Filenames.Count) ? result.Filenames[i] : $"file_{i + 1}.bin";
+                            File.WriteAllBytes(fileName, blocks[i]);
+                        }
+                    }
+                    else
+                    {
+                        // Ingen KCS_FILES - vi spÃ¸r bruker om filnavn
+                        for (int i = 0; i < blocks.Count; i++)
+                        {
+                            SaveFileDialog sfd = new SaveFileDialog();
+                            sfd.Filter = "BinÃ¦re filer (*.bin)|*.bin|Alle filer (*.*)|*.*";
+                            sfd.FileName = $"file_{i + 1}.bin";
+                            if (sfd.ShowDialog() == DialogResult.OK)
+                            {
+                                File.WriteAllBytes(sfd.FileName, blocks[i]);
+                            }
+                        }
+                    }
                 }
 
-                // Dekod KCS blokkene
-                var decodedBlocks = _kcs.DecodeMultipleBlocks(samples.ToArray());
-
-                // Sjekk for KCS_FILES header
-                string header = Encoding.ASCII.GetString(decodedBlocks[0]);
-                List<string> filenames = new();
-
-                if (header.StartsWith("KCS_FILES"))
-                {
-                    var parts = header.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                    filenames = parts.Skip(1).ToList(); // Filnavnene
-                                                        // decodedBlocks.RemoveAt(0); // Fjern metadata-blokken
-                }
-
-                // Lagre ut filene med navn eller fallback
-                for (int i = 0; i < decodedBlocks.Count; i++)
-                {
-                    string fileName = (i < filenames.Count) ? filenames[i] : $"file_{i + 1}.bin";
-                    File.WriteAllBytes(fileName, decodedBlocks[i]);
-                }
-
-                // Ferdig progress
-                progressBar.ProgressBar.Invoke(() => progressBar.Value = 100);
-                MessageBox.Show($"Dekodet {decodedBlocks.Count} filer fra WAV!");
             }
+
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -165,12 +162,12 @@ namespace KCS_Retro
                 // Beregn opptakstid for DENNE filen alene
                 var recordingTime = _kcs.CalculateRecordingTime(
                     new List<(string FileName, byte[] Content)> { (fileName, fileBytes) },
-                    includeFileNames: checkBox1.Checked
+                    includeFileNames: recordFilenames.Checked
                 );
 
                 var calculateWaveSize = _kcs.CalculateWavSize(
                     new List<(string FileName, byte[] Content)> { (fileName, fileBytes) },
-                    includeFileNames: checkBox1.Checked
+                    includeFileNames: recordFilenames.Checked
                 );
                 FileInfo fi = new FileInfo(fullPath);
                 long fileSizeBytes = fi.Length;
@@ -187,37 +184,74 @@ namespace KCS_Retro
 
                 fileList.Items.Add(item);
 
-                // Oppdater samlet status om ønsket:
+                // Oppdater samlet status om Ã¸nsket:
                 // UpdateTotalRecordingTime();
             }
         }
 
-        private async void button4_Click_2(object sender, EventArgs e)
+        private async void recordToFileBtn_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void debugButtonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Baudrate er nÃ¥: {_kcsParams.BaudRate}");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (fileList.SelectedItems.Count > 0)
+            {
+                // Lag en kopi av SelectedItems for Ã¥ unngÃ¥ samlingsendring under iterasjon
+                var selectedItems = fileList.SelectedItems.Cast<ListViewItem>().ToList();
+
+                foreach (var item in selectedItems)
+                {
+                    fileList.Items.Remove(item);
+                }
+            }
+        }
+
+        private async void aboutKCSRetroToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutFrm = new AboutKCS();
+            aboutFrm.TopMost = true;
+            aboutFrm.ShowDialog();
+        }
+
+        private async void recordToFileBtn_Click(object sender, EventArgs e)
         {
             if (fileList.Items.Count > 0)
             {
                 progressBar.Value = 0;
                 progressBar.Maximum = 100;
 
-                // Start background Task
+                // âœ… Hent ut info fra ListView FÃ˜R Task.Run
+                var filesToProcess = new List<(string, string)>();
+                foreach (ListViewItem file in fileList.Items)
+                {
+                    string fileName = file.SubItems[0].Text;   // Kolonne 0 = filnavn
+                    string filePath = file.SubItems[1].Text;   // Kolonne 1 = full path
+                    filesToProcess.Add((fileName, filePath));
+                }
+
+                // âœ… Start background Task
                 await Task.Run(() =>
                 {
                     var files = new List<(string, byte[])>();
-                    foreach (ListViewItem file in fileList.Items)
+                    foreach (var file in filesToProcess)
                     {
-                        string fileName = file.SubItems[0].Text;   // Kolonne 0 = filnavn
-                        string filePath = file.SubItems[1].Text;   // Kolonne 1 = full path
-                        files.Add((fileName, File.ReadAllBytes(filePath)));
+                        files.Add((file.Item1, File.ReadAllBytes(file.Item2)));
                     }
 
-
-                    byte[] pcm = _kcs.EncodeMultipleFiles(files, recordFilenames: checkBox1.Checked, progress =>
+                    byte[] pcm = _kcs.EncodeMultipleFiles(files, recordFilenames: recordFilenames.Checked, progress =>
                     {
-                        // Progress-rapportering må skje på UI-tråd
+                        // âœ… Oppdater progress trygt pÃ¥ UI-trÃ¥den
                         progressBar.ProgressBar.Invoke(() => progressBar.Value = (int)(progress * 100));
                     });
 
-                    // Nå må vi spørre brukeren hvor vi skal lagre, men det må gjøres på UI-tråden
+                    // âœ… Lagre WAV mÃ¥ skje pÃ¥ UI
                     Invoke(() =>
                     {
                         saveFileDialog1.Filter = "WAV filer (*.wav)|*.wav";
@@ -236,35 +270,21 @@ namespace KCS_Retro
             }
             else
             {
-                MessageBox.Show("Æsj da, ingen filer valgt???");
+                MessageBox.Show("Ã†sj da, ingen filer valgt???");
             }
         }
 
-        private void debugButtonToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripButton6_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"Baudrate er nå: {_kcsParams.BaudRate}");
+            Close();
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            if (fileList.SelectedItems.Count > 0)
-            {
-                // Lag en kopi av SelectedItems for å unngå samlingsendring under iterasjon
-                var selectedItems = fileList.SelectedItems.Cast<ListViewItem>().ToList();
-
-                foreach (var item in selectedItems)
-                {
-                    fileList.Items.Remove(item);
-                }
-            }
-        }
-
-        private async void aboutKCSRetroToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var aboutFrm = new AboutKCS();
-            aboutFrm.TopMost = true;
-            aboutFrm.ShowDialog();
+            var audioInputFrm = new AudioInputFrm();
+            audioInputFrm.ShowDialog();
         }
     }
 }
+
 

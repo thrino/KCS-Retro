@@ -9,6 +9,7 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using NAudio.Wave;
+using System.Diagnostics;
 
 namespace KCS_Retro
 {
@@ -79,6 +80,45 @@ namespace KCS_Retro
 
             progress?.Invoke(1.0);
             return pcm.ToArray();
+        }
+        public async Task<KcsResponse> RecordToAudioOutAsync(List<(string FileName, byte[] Content)> files, int outputDeviceNumber, bool recordFilenames, Action<double> reportProgress = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Generer PCM-data
+                byte[] pcm = EncodeMultipleFiles(files, recordFilenames, reportProgress);
+
+                // Spill av til valgt audio-utgang
+                using var ms = new MemoryStream(pcm);
+                using var rawSource = new RawSourceWaveStream(ms, new WaveFormat(_params.SampleRate, _params.BitsPerSample, _params.Channels));
+                using var waveOut = new WaveOutEvent
+                {
+                    DeviceNumber = outputDeviceNumber
+                };
+
+                waveOut.Init(rawSource);
+                waveOut.Play();
+
+                // Vent på ferdig eller cancellation
+                while (waveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        waveOut.Stop();
+                        break;
+                    }
+                    await Task.Delay(100, cancellationToken);
+                }
+                var successRes = new KcsResponse
+                {
+                      Code = KcsResponseCode.Success,
+                };
+                return KcsResponse.Success(new AudioDataFile { DataBlocks = null, Filenames = null });
+            }
+            catch (Exception ex)
+            {
+                return KcsResponse.Error(KcsResponseCode.StreamAborted, $"Feil under avspilling: {ex.Message}");
+            }
         }
 
         private string SanitizeFileName(string name)
@@ -207,6 +247,65 @@ namespace KCS_Retro
             writer.Write(pcmData.Length);
             writer.Write(pcmData);
         }
+        public KcsResponse DecodeWavWithOptionalKcsFiles(string wavFilePath, Action<double> reportProgress = null)
+        {
+            try
+            {
+                var reader = new AudioFileReader(wavFilePath);
+                List<short> samples = new();
+                var buffer = new float[reader.WaveFormat.SampleRate];
+                int read;
+                long totalSamples = reader.Length / (reader.WaveFormat.BitsPerSample / 8);
+                long samplesRead = 0;
+
+                while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    samples.AddRange(buffer.Take(read).Select(f => (short)(f * short.MaxValue)));
+                    samplesRead += read;
+                    reportProgress?.Invoke((double)samplesRead / totalSamples);
+                }
+
+                if (samples.Count == 0)
+                {
+                    Debug.WriteLine($"No KCS sync signal found!");
+                    return KcsResponse.Error(KcsResponseCode.NoLeadIn, "No audio samples found in the WAV file.");
+                }
+                // Decode blokker
+                var decodedBlocks = DecodeMultipleBlocks(samples.ToArray());
+                if (decodedBlocks.Count == 0)
+                {
+                    Debug.WriteLine($"No KCS blocks signal found to decode!");
+                    return KcsResponse.Error(KcsResponseCode.DecodingError, "No KCS blocks decoded.");
+                }
+                // Sjekk for KCS_FILES header
+                List<string> filenames = new();
+                string header = Encoding.ASCII.GetString(decodedBlocks[0]);
+                if (header.StartsWith("KCS_FILES"))
+                {
+                    Debug.WriteLine($"We have KCS_FILES! Use em!");
+                    var parts = header.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    filenames = parts.Skip(1).ToList();
+                    //decodedBlocks.RemoveAt(0); // Fjern metadata
+                }
+
+                reportProgress?.Invoke(1.0); // Ferdig
+
+                // Retur suksess med dekodede data og evt. filnavn
+                Debug.WriteLine($"All files were successfully konverted to DATA!");
+
+                return new KcsResponse
+                {
+                    Code = KcsResponseCode.Success,
+                    Message = "Decoded successfully.",
+                    Data = new AudioDataFile { DataBlocks = decodedBlocks, Filenames = filenames }
+                };
+            }
+            catch (Exception ex)
+            {
+                return KcsResponse.Error(KcsResponseCode.DecodingError, $"Error reading WAV file: {ex.Message}");
+            }
+        }
+
 
         // Lese fra wav og dekode
         public KcsResponse DecodeWav(string path, Action<double> reportProgress = null)
@@ -240,34 +339,83 @@ namespace KCS_Retro
         }
 
         // Sanntidslytting på lydport (krever NAudio)
-        public void Listen(Action<KcsResponse> onData)
+        public async Task<KcsResponse> ListenAsync(int deviceNumber, Action<double> reportProgress = null, int listenTimeoutMs = 2000, CancellationToken cancellationToken = default)
         {
-            var waveIn = new WaveInEvent
+            try
             {
-                WaveFormat = new WaveFormat(_params.SampleRate, _params.BitsPerSample, _params.Channels),
-                BufferMilliseconds = 100
-            };
-
-            List<short> sampleBuffer = new();
-            waveIn.DataAvailable += (s, e) =>
-            {
-                for (int i = 0; i < e.BytesRecorded; i += 2)
-                    sampleBuffer.Add(BitConverter.ToInt16(e.Buffer, i));
-
-                if (sampleBuffer.Count > _params.SampleRate) // 1 sek buffer
+                var waveIn = new WaveInEvent
                 {
-                    var response = DecodeSamples(sampleBuffer.ToArray());
-                    onData?.Invoke(response);
-                    sampleBuffer.Clear();
+                    DeviceNumber = deviceNumber,
+                    WaveFormat = new WaveFormat(_params.SampleRate, _params.BitsPerSample, _params.Channels),
+                    BufferMilliseconds = 200
+                };
 
-                    if (!response.IsSuccess)
+                List<short> sampleBuffer = new();
+                DateTime lastDataTime = DateTime.Now;
+                bool isRecording = true;
+
+                waveIn.DataAvailable += (s, e) =>
+                {
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        waveIn.StopRecording(); // Auto-stop ved feil
+                        isRecording = false;
+                        waveIn.StopRecording();
+                        return;
+                    }
+
+                    for (int i = 0; i < e.BytesRecorded; i += 2)
+                        sampleBuffer.Add(BitConverter.ToInt16(e.Buffer, i));
+
+                    lastDataTime = DateTime.Now;
+                };
+
+                waveIn.StartRecording();
+
+                // Lytter loop
+                while (isRecording)
+                {
+                    await Task.Delay(200, cancellationToken);
+
+                    // Hvis vi har samples og det har vært stille lenge nok, stopp
+                    if (sampleBuffer.Count > _params.SampleRate / 2 &&
+                        (DateTime.Now - lastDataTime).TotalMilliseconds > listenTimeoutMs)
+                    {
+                        isRecording = false;
+                        waveIn.StopRecording();
                     }
                 }
-            };
-            waveIn.StartRecording();
+
+                if (sampleBuffer.Count == 0)
+                    return KcsResponse.Error(KcsResponseCode.NoLeadIn, "Ingen lyddata oppdaget.");
+
+                // Bruk samme dekode-flyt som WAV
+                var decodedBlocks = DecodeMultipleBlocks(sampleBuffer.ToArray());
+                if (decodedBlocks.Count == 0)
+                    return KcsResponse.Error(KcsResponseCode.DecodingError, "Ingen KCS-blokker dekodet fra lydstrøm.");
+
+                // Sjekk KCS_FILES
+                List<string> filenames = new();
+                string header = Encoding.ASCII.GetString(decodedBlocks[0]);
+                if (header.StartsWith("KCS_FILES"))
+                {
+                    var parts = header.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    filenames = parts.Skip(1).ToList();
+                    decodedBlocks.RemoveAt(0); // Fjern metadata
+                }
+
+                return new KcsResponse
+                {
+                    Code = KcsResponseCode.Success,
+                    Message = "Realtime audio dekodet.",
+                    Data = new AudioDataFile { DataBlocks = decodedBlocks, Filenames = filenames }
+                };
+            }
+            catch (Exception ex)
+            {
+                return KcsResponse.Error(KcsResponseCode.DecodingError, $"Feil under lytting: {ex.Message}");
+            }
         }
+
 
         // --- Intern dekoder ---
         private KcsResponse DecodeSamples(short[] samples)
@@ -308,7 +456,7 @@ namespace KCS_Retro
             if (result.Count == 0)
                 return KcsResponse.Error(KcsResponseCode.DecodingError, "No valid data decoded.");
 
-            return KcsResponse.Success(result.ToArray());
+            return KcsResponse.SampleDecoded(result.ToArray());
         }
 
         // --- Genererer tone ---

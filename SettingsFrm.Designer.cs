@@ -62,6 +62,9 @@
             closeBtn = new Button();
             label19 = new Label();
             exportFormat = new ComboBox();
+            label20 = new Label();
+            textBox1 = new TextBox();
+            button1 = new Button();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -366,7 +369,7 @@
             // closeBtn
             // 
             closeBtn.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            closeBtn.Location = new Point(422, 235);
+            closeBtn.Location = new Point(422, 263);
             closeBtn.Name = "closeBtn";
             closeBtn.Size = new Size(91, 33);
             closeBtn.TabIndex = 12;
@@ -377,7 +380,7 @@
             // label19
             // 
             label19.AutoSize = true;
-            label19.Location = new Point(17, 245);
+            label19.Location = new Point(5, 245);
             label19.Name = "label19";
             label19.Size = new Size(119, 15);
             label19.TabIndex = 13;
@@ -387,16 +390,47 @@
             // 
             exportFormat.DropDownStyle = ComboBoxStyle.DropDownList;
             exportFormat.FormattingEnabled = true;
-            exportFormat.Location = new Point(146, 242);
+            exportFormat.Location = new Point(134, 242);
             exportFormat.Name = "exportFormat";
             exportFormat.Size = new Size(199, 23);
             exportFormat.TabIndex = 14;
+            exportFormat.SelectedIndexChanged += exportFormat_SelectedIndexChanged;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(7, 273);
+            label20.Name = "label20";
+            label20.Size = new Size(96, 15);
+            label20.TabIndex = 15;
+            label20.Text = "Output Directory";
+            label20.Click += label20_Click;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(134, 270);
+            textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
+            textBox1.Size = new Size(199, 23);
+            textBox1.TabIndex = 16;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(339, 270);
+            button1.Name = "button1";
+            button1.Size = new Size(18, 23);
+            button1.TabIndex = 17;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
             // 
             // Settings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(521, 277);
+            ClientSize = new Size(521, 308);
+            Controls.Add(button1);
+            Controls.Add(textBox1);
+            Controls.Add(label20);
             Controls.Add(exportFormat);
             Controls.Add(label19);
             Controls.Add(closeBtn);
@@ -452,5 +486,8 @@
         private Button closeBtn;
         private Label label19;
         private ComboBox exportFormat;
+        private Label label20;
+        private TextBox textBox1;
+        private Button button1;
     }
 }

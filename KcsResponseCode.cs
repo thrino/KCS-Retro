@@ -14,17 +14,24 @@ namespace KCS_Retro
         DecodingError = 3,
         StreamAborted = 4
     }
-
+    public class AudioDataFile
+    {
+        public List<byte[]> DataBlocks {  get; set; }
+        public List<string> Filenames {  get; set; }
+    }
     public class KcsResponse
     {
         public KcsResponseCode Code { get; set; }
         public string Message { get; set; }
-        public byte[] Data { get; set; }
-
+        public AudioDataFile Data { get; set; }
+        public byte[] bytes { get; set; }
         public bool IsSuccess => Code == KcsResponseCode.Success;
 
-        public static KcsResponse Success(byte[] data) =>
+        public static KcsResponse Success(AudioDataFile data) =>
             new() { Code = KcsResponseCode.Success, Message = "Success", Data = data };
+
+        public static KcsResponse SampleDecoded(byte[] data) =>
+    new() { Code = KcsResponseCode.Success, Message = "Success", bytes = data };
 
         public static KcsResponse Error(KcsResponseCode code, string message) =>
             new() { Code = code, Message = message };
